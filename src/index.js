@@ -105,11 +105,33 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  
+  // Codígo da solução
+  const { id } = request.params;
+  const { username } = request.headers;
+
+  const index = users.findIndex(user => user.username === username);
+
+  const todoIndex = users[index].todos.findIndex(todo => todo.id === id);
+
+  users[index].todos[todoIndex].done = true;
+
+  return response.status(200).json();
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  
+  // Codígo da solução
+  const { username } = request.headers;
+  const { id } = request.params;
+
+  const index = users.findIndex(user => user.username === username);
+
+  const todoIndex = users[index].todos.findIndex(todo => todo.id === id);
+
+  users[index].todos.splice(todoIndex, 1);
+
+  return response.status(200).json();
 });
 
 module.exports = app;
