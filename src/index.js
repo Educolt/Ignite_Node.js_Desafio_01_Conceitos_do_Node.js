@@ -53,7 +53,7 @@ app.get('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.post('/todos', checksExistsUserAccount, (request, response) => {
-  
+
   // Codígo da solução
   const { title, deadline } = request.body;
   const { username } = request.headers;
@@ -74,7 +74,34 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+
+  // Codígo da solução
+  const { id } = request.params;
+  const { username } = request.headers;
+
+  const { title, deadline } = request.body
+
+  // get user index
+  const index = users.findIndex( user => user.username === username);
+
+  // get todo index
+  const todoIndex = users[index].todos.findIndex( todo => todo.id === id);
+
+  // get oldTodo
+  const todo = users[index].todos[todoIndex];
+
+  // create updated todo
+  const newTodo = {
+    ...todo,
+    title,
+    deadline: new Date(deadline),
+  }
+
+  // set todo
+  users[index].todos[todoIndex] = newTodo;
+
+  return response.status(201).json(newTodo);
+
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
