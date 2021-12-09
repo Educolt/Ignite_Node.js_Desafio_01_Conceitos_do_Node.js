@@ -30,6 +30,12 @@ app.post('/users', (request, response) => {
   // Codígo da solução
   const { name, username } = request.body;
 
+  const usernameExist = users.find(user => user.username === username);
+
+  if(usernameExist) {
+    return response.status(400).json({error: 'Username already exists !'});
+  }
+
   const user = {
     id: uuidv4(),
     name,
@@ -89,6 +95,10 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   // get todo index
   const todoIndex = users[index].todos.findIndex( todo => todo.id === id);
 
+  if(todoIndex === -1) {
+    return response.status(404).json({ error:"Todo not found !"})
+  }
+
   // get oldTodo
   const todo = users[index].todos[todoIndex];
 
@@ -116,9 +126,15 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 
   const todoIndex = users[index].todos.findIndex(todo => todo.id === id);
 
+  if(todoIndex === -1) {
+    return response.status(404).json({error: 'Todo not found !'});
+  }
+
   users[index].todos[todoIndex].done = true;
 
-  return response.status(200).json();
+  const todo = users[index].todos[todoIndex];
+
+  return response.status(200).json(todo);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
@@ -131,9 +147,13 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
 
   const todoIndex = users[index].todos.findIndex(todo => todo.id === id);
 
+  if(todoIndex === -1) {
+    return response.status(404).json({ error:"Todo not found !"})
+  }
+
   users[index].todos.splice(todoIndex, 1);
 
-  return response.status(200).json();
+  return response.status(204).json();
 });
 
 module.exports = app;
