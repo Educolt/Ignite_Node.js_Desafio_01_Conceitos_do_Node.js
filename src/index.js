@@ -11,7 +11,6 @@ app.use(express.json());
 const users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
 
   // Codígo da solução
   const { id } = request.query;
@@ -25,7 +24,8 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 app.post('/users', (request, response) => {
-  // Complete aqui
+
+  // Codígo da solução
   const { name, username } = request.body;
 
   const user = {
@@ -41,8 +41,15 @@ app.post('/users', (request, response) => {
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+
+  // Codígo da solução
+  const { username } = request.headers;
+
+  const userIndex = users.findIndex(u => u.username === username);
   
+  const todos = users[userIndex].todos;
+
+  return response.status(200).json(todos);
 });
 
 app.post('/todos', checksExistsUserAccount, (request, response) => {
